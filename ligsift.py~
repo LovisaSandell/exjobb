@@ -1,0 +1,33 @@
+import glob
+import os
+import commands
+LIGSIFT='/home/lovsa947/LIGSIFT/LIGSIFT'
+dud_folder='/home/lovsa947/LIGSIFT/dud/'
+for target_folder in glob.glob(dud_folder + 'targets/*'):
+    target=os.path.basename(target_folder)
+    print target,target_folder
+    input_target=target_folder + '/xtal-lig.mol2'
+    decoy_db=dud_folder + 'dud_decoys2006/' + target + '_decoys.mol2'
+    ligands_db=dud_folder + 'dud_ligands2006/' + target + '_ligands.mol2'
+    print decoy_db
+    print ligands_db
+    output_file_decoys=dud_folder + 'output/' + target + '.decoys.txt'
+    output_file_ligands=dud_folder + 'output/' + target + '.ligands.txt'
+    
+    if not os.path.exists(output_file_decoys):
+        cmd_decoys='{} -q {} -db {} -o {}'.format(LIGSIFT,input_target, decoy_db, output_file_decoys+'.tmp')
+        print "Running: " + cmd_decoys
+        out=commands.getoutput(cmd_decoys)
+        commands.getoutput('mv ' + output_file_decoys+'.tmp' + ' ' + output_file_decoys)
+        print out
+    else:
+        print output_file_decoys + ' exists'
+    if not os.path.exists(output_file_ligands):
+        cmd_ligands='{} -q {} -db {} -o {}'.format(LIGSIFT,input_target, ligands_db, output_file_ligands+'.tmp')
+        print "Running: " + cmd_ligands
+        commands.getoutput(cmd_ligands)
+        commands.getoutput('mv ' + output_file_ligands+'.tmp' + ' ' + output_file_ligands)
+
+    else:
+        print output_file_ligands + ' exists'
+
